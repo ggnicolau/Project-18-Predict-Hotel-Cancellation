@@ -1309,7 +1309,7 @@ sns.lineplot(x = fpr, y = tpr, ax = ax)
     
 
 
-An ROC curve shows the performance of one classification model at all classification thresholds. \
+A ROC curve shows the performance of one classification model at all classification thresholds. \
 It can be used to evaluate the strength of a model. ROC Curves can also be used to compare two models and we've this mind.
 
 ### <font size="6"> CONCLUSIONS </font></span>
