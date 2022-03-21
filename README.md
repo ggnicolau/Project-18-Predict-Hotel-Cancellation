@@ -1,4 +1,4 @@
-<span><font size="13">*BUSINESS PROBLEM: explore a hotel booking dataset and predict cancellation*</font></span>
+# *BUSINESS PROBLEM: explore a hotel booking dataset and predict cancellation*
 
 # STAGE 1: preprecessing and EDA
 
