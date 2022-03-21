@@ -928,7 +928,6 @@ sns.displot(df_hotel, x="is_canceled")
 
 
 
-    <seaborn.axisgrid.FacetGrid at 0x7f6a4ff0b2e0>
 
 
 
@@ -949,7 +948,6 @@ sns.clustermap(df_hotel.corr())
 
 
 
-    <seaborn.matrix.ClusterGrid at 0x7f6a86405cf0>
 
 
 
@@ -970,7 +968,6 @@ sns.boxplot(x = df_hotel['lead_time'] + 1)
 
 
 
-    <AxesSubplot:xlabel='lead_time'>
 
 
 
@@ -994,7 +991,6 @@ sns.histplot(df_hotel['lead_time'] + 1, log_scale = True)
 
 
 
-    <AxesSubplot:xlabel='lead_time', ylabel='Count'>
 
 
 
@@ -1139,7 +1135,6 @@ sns.scatterplot(data = df_hotel, x = 'lead_time', y = 'pred_baseline')
 
 
 
-    <AxesSubplot:xlabel='lead_time', ylabel='pred_baseline'>
 
 
 
@@ -1171,7 +1166,6 @@ sns.scatterplot(data = df_hotel, x = 'log_lead_time', y = 'pred_m1', hue = 'is_c
 
 
 
-    <AxesSubplot:xlabel='log_lead_time', ylabel='pred_m1'>
 
 
 
@@ -1210,7 +1204,6 @@ sns.scatterplot(data = df_hotel, x = 'log_lead_time', y = 'pred_cancel', hue = '
 
 
 
-    <AxesSubplot:xlabel='log_lead_time', ylabel='pred_cancel'>
 
 
 
@@ -1315,7 +1308,6 @@ sns.lineplot(x = fpr, y = tpr, ax = ax)
 
 
 
-    <AxesSubplot:>
 
 
 
