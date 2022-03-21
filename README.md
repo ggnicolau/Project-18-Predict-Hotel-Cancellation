@@ -227,7 +227,7 @@ df_company_agg.head(5)
 
 
 
-CONSIDERATIONS: we've too many missing values for company; probably those missing values mean that the reservation weren't scheduled by any company; it would be better to create a boolean feature to detect if it's a company reservation or not.
+CONSIDERATIONS: we've too many missing values for company; probably those missing values means that the reservation weren't scheduled by any company; it would be better to create a boolean feature to detect if it's a company reservation or not.
 
 
 ```python
