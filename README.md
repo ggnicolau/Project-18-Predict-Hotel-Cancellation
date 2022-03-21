@@ -969,7 +969,7 @@ sns.boxplot(x = df_hotel['lead_time'] + 1)
     
 
 
-CONSIDERATION 1:boxplotting we can see that most bookings (our interquartile interval) is somewhere in between 1 and 180 days; above 400 are our outliers; \
+CONSIDERATION 1: boxplotting we can see that most bookings (our interquartile interval) is somewhere in between 1 and 180 days; above 400 are our outliers; \
 CONSIDERATION 2: boxplotting we can see that most bookings (our interquartile interval) is somewhere in between 1 and 180 days; above 400 are our outliers; \
 CONSIDERATION 3: we can see that most reservations are somewhere in between 80 and 180 days before; \
 CONSIDERATION 4: we can see that we still have a considerable ammount of bookings somewehere in between 1 and 10;
@@ -1243,9 +1243,9 @@ sns.lineplot(data=df_f1, x='threshold', y='f1_score').set_title(title)
     
 
 
-F-1 score finds the best spot between Precision and Recall and it's reasonable to use with binary classification or with multiclass balanced data. \
+F-1 score finds the best spot between Precision and Recall and it's reasonable to use with binary classification or balanced multiclass data. \
 Most of the times our business problem determines if we should privilege Precision or Recall, but F-1 score is a good generalization to compare the performance of the models. \
-We can check and set the best threshold for our model based on the score. 
+We can check and set the best threshold for our model so we can improve our desired score. 
 
 
 ```python
@@ -1509,11 +1509,7 @@ print('FINISHED!')
 ```
 
 
-    400
-
-
-
-
+    Found ntree_limit: 400
 
     FINISHED!
     CPU times: user 4min 11s, sys: 384 ms, total: 4min 12s
