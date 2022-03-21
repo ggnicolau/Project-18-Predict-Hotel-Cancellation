@@ -1719,7 +1719,7 @@ print("logloss_test = {}".format(log_loss(Y_test, best_preds)))
 
 ### <font size="6"> CONCLUSIONS </font></span>
 
-**We achieved a F-1 score of more than 82% without GridSearchCV and moving our thresholds with about 4 minutes of training!.**
+**We achieved a F-1 score of more than 82% without GridSearchCV or moving our thresholds, within just about 4 minutes of training!**
 
 * **Advantages**
     * Hierarchical tree models, with root and leaves, reproduces better human stratified decision;
