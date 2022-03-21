@@ -253,8 +253,7 @@ df_hotel['is_company'].sum()
 df_hotel = df_hotel.drop(['company'], axis=1)
 ```
 
-CONSIDERATIONS: it's rare for companies to book!
-
+CONSIDERATIONS: Most cancelations are from ONLINE booking and GROUPS. Direct bookinhs are rarely cancelled.
 
 ```python
 # Create a new boolean feature considering if it's a reservation made by an agent or not
