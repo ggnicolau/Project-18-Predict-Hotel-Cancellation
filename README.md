@@ -905,14 +905,7 @@ df_hotel = df_hotel.drop(['is_deposit', 'n_rows_country'], axis=1)
 ```
 
 
-```python
 
-```
-
-
-
-
-    dtype('int64')
 
 
 
