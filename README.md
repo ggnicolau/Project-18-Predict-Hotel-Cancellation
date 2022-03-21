@@ -1625,7 +1625,7 @@ print("Logloss_test = {}".format(log_loss(Y_test, best_preds)))
 
 
 **Now we've a reasonable predictive model**! It could be even improved findind best parameters. \
-Using the best threshold for Kappa score improved our overall scores compared with best F-1 score threshold, probably due to imbalanced class.
+Using the best threshold for Kappa score improved our overall scores compared with best F-1 score threshold, probably due to imbalanced classes.
 
 ### XGBoost with manually selected features using Patsy and Softprob
 
