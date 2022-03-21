@@ -1417,8 +1417,6 @@ halving_cv = HalvingGridSearchCV(xgb_cl,
     Wall time: 95.6 ms
 
 
-    /home/ggnicolau/miniconda3/envs/jupyter-1/lib/python3.10/site-packages/xgboost/compat.py:36: FutureWarning: pandas.Int64Index is deprecated and will be removed from pandas in a future version. Use pandas.Index with the appropriate dtype instead.
-      from pandas import MultiIndex, Int64Index
 
 
 <font size="3"> <center><p> **CONSIDERATION: We would like to automate the search for the best parameters, but it takes more time than we had. \
@@ -1522,8 +1520,7 @@ print('FINISHED!')
     400
 
 
-    /home/ggnicolau/miniconda3/envs/jupyter-1/lib/python3.10/site-packages/xgboost/core.py:105: UserWarning: ntree_limit is deprecated, use `iteration_range` or model slicing instead.
-      warnings.warn(
+
 
 
     FINISHED!
@@ -1718,12 +1715,6 @@ print("logloss_test = {}".format(log_loss(Y_test, best_preds)))
 # pyplot.show()
 ```
 
-    [20:49:33] WARNING: ../src/learner.cc:576: 
-    Parameters: { "gradient_based", "scale_pos_weight" } might not be used.
-    
-      This could be a false alarm, with some parameters getting used by language bindings but
-      then being mistakenly passed down to XGBoost core, or some parameter actually being used
-      but getting flagged wrongly here. Please open an issue if you find any such cases.
     
     
     Precision = 0.8658173592094297
@@ -1737,212 +1728,6 @@ print("logloss_test = {}".format(log_loss(Y_test, best_preds)))
 
 
 **Using patsy and softprob (contains predicted probability of each data point belonging to each class) improved our overall scores! And we didn't even explored our thresholds!** 
-
-### BONUS: Check for last_minute
-
-
-```python
-%%time
-from sklearn import datasets
-import os
-import xgboost as xgb
-from sklearn.model_selection import train_test_split
-from sklearn.preprocessing import OneHotEncoder
-from sklearn.compose import ColumnTransformer
-from xgboost import XGBClassifier
-from xgboost import XGBRegressor
-from sklearn.metrics import cohen_kappa_score, precision_score
-from sklearn.metrics import matthews_corrcoef, mean_squared_error, log_loss
-from sklearn.metrics import f1_score, recall_score, roc_auc_score
-import patsy
-
-df_filter = df_hotel.loc[df_hotel['reservation_type'] == 'last_minute']
-
-
-# Use patsy to automatic interact between features
-y, X = patsy.dmatrices('is_canceled ~ hotel + lead_time + arrival_date_year + arrival_date_month + stays_in_weekend_nights + \
-                       stays_in_week_nights + adults + children + babies + meal + country + market_segment + distribution_channel + \
-                       is_repeated_guest + previous_cancellations + previous_bookings_not_canceled + reserved_room_type + \
-                       assigned_room_type + booking_changes + deposit_type + days_in_waiting_list + customer_type + adr + \
-                       required_car_parking_spaces + total_of_special_requests + is_company + is_agent', data = df_filter)
-
-
-
-                    
-# Display patsy features
-#display(X)
-
-X_train, X_test, Y_train, Y_test = train_test_split(X, y, test_size=0.2)
-
-D_train = xgb.DMatrix(X_train, label=Y_train)#, enable_categorical=True)
-D_test = xgb.DMatrix(X_test, label=Y_test)#, enable_categorical=True)
-
-
-param = {
-    'eta': 0.10,                      # Lower ratios avoid over-fitting. Default is 3.
-    'max_depth': 30,                  # Lower ratios avoid over-fitting. Default is 6.
-    "min_child_weight": 3,            # Larger ratios avoid over-fitting. Default is 1.
-    "gamma": 0.3,                     # Larger values avoid over-fitting. Default is 0. 
-    "colsample_bytree" : 0.7,         # Lower ratios avoid over-fitting. Values from 0.3 to 0.8 if you have many columns (especially if you did one-hot encoding), or 0.8 to 1 if you only have a few columns.
-    "scale_pos_weight": 1,            # Default is 1. Control balance of positive and negative weights, for unbalanced classes.
-    "reg_lambda": 10,                 # Larger ratios avoid over-fitting. Default is 1.
-    "alpha": 1,                       # Larger ratios avoid over-fitting. Default is 0.
-    'subsample':0.5,                  # Lower ratios avoid over-fitting. Default 1. 0.5 recommended.
-    'num_parallel_tree': 2,           # Parallel trees constructed during each iteration. Default is 1.
-    'objective': 'multi:softprob',    # Default is reg:squarederror. 'multi:softprob' for multiclass.  
-    'num_class': 2,                   # Use if softprob is set.
-    'verbosity':1,
-    'eval_metric': 'auc',
-    'use_rmm':False,                   # Use GPU if available
-    'nthread':-1,                      # Set -1 to use all threads.
-    'tree_method': 'auto',             # 'gpu_hist'. Default is auto: analyze the data and chooses the fastest.
-    'gradient_based': False,           # If True you can set subsample as low as 0.1. Only use with gpu_hist 
-} 
-
-steps = 200  # The number of training iterations
-
-model = xgb.train(param, D_train, steps)
-import numpy as np
-from sklearn.metrics import precision_score, recall_score, accuracy_score
-
-preds = model.predict(D_test)
-best_preds = np.asarray([np.argmax(line) for line in preds])
-
-print("Precision = {}".format(precision_score(Y_test, best_preds)))
-print("Recall = {}".format(recall_score(Y_test, best_preds)))
-print("f1 = {}".format(f1_score(Y_test, best_preds)))
-print("kappa_score = {}".format(cohen_kappa_score(Y_test, best_preds)))
-print("matthews_corrcoef = {}".format(matthews_corrcoef(Y_test, best_preds)))
-# print("mean_squared_error_train = {}".format(mean_squared_error(Y_train, best_preds)))
-print("mean_squared_error_test = {}".format(mean_squared_error(Y_test, best_preds)))
-print("logloss_test = {}".format(log_loss(Y_test, best_preds)))
-#print("logloss_train = {}".format(log_loss(Y_train, best_preds)))
-
-# from xgboost import plot_importance
-# import matplotlib.pyplot as pyplot
-# plot_importance(model)
-```
-
-    [20:59:46] WARNING: ../src/learner.cc:576: 
-    Parameters: { "gradient_based", "scale_pos_weight" } might not be used.
-    
-      This could be a false alarm, with some parameters getting used by language bindings but
-      then being mistakenly passed down to XGBoost core, or some parameter actually being used
-      but getting flagged wrongly here. Please open an issue if you find any such cases.
-    
-    
-    Precision = 0.8192090395480226
-    Recall = 0.32293986636971045
-    f1 = 0.46325878594249204
-    kappa_score = 0.42792581609747615
-    matthews_corrcoef = 0.4828216600459381
-    mean_squared_error_test = 0.08173193870104598
-    logloss_test = 2.8229273791797023
-    CPU times: user 8min 28s, sys: 697 ms, total: 8min 29s
-    Wall time: 1min 8s
-
-
-
-```python
-%%time
-from sklearn import datasets
-import os
-import xgboost as xgb
-from sklearn.model_selection import train_test_split
-from sklearn.preprocessing import OneHotEncoder
-from sklearn.compose import ColumnTransformer
-from xgboost import XGBClassifier
-from xgboost import XGBRegressor
-from sklearn.metrics import cohen_kappa_score, precision_score
-from sklearn.metrics import matthews_corrcoef, mean_squared_error, log_loss
-from sklearn.metrics import f1_score, recall_score, roc_auc_score
-import patsy
-
-df_filter = df_hotel.loc[df_hotel['reservation_type'] == 'scheduled']
-
-
-# Use patsy to automatic interact between features
-y, X = patsy.dmatrices('is_canceled ~ hotel + lead_time + arrival_date_year + arrival_date_month + stays_in_weekend_nights + \
-                       stays_in_week_nights + adults + children + babies + meal + country + market_segment + distribution_channel + \
-                       is_repeated_guest + previous_cancellations + previous_bookings_not_canceled + reserved_room_type + \
-                       assigned_room_type + booking_changes + deposit_type + days_in_waiting_list + customer_type + adr + \
-                       required_car_parking_spaces + total_of_special_requests + is_company + is_agent', data = df_filter)
-
-
-
-                    
-# Display patsy features
-#display(X)
-
-X_train, X_test, Y_train, Y_test = train_test_split(X, y, test_size=0.2)
-
-D_train = xgb.DMatrix(X_train, label=Y_train)#, enable_categorical=True)
-D_test = xgb.DMatrix(X_test, label=Y_test)#, enable_categorical=True)
-
-
-param = {
-    'eta': 0.10,                      # Lower ratios avoid over-fitting. Default is 3.
-    'max_depth': 30,                  # Lower ratios avoid over-fitting. Default is 6.
-    "min_child_weight": 3,            # Larger ratios avoid over-fitting. Default is 1.
-    "gamma": 0.3,                     # Larger values avoid over-fitting. Default is 0. 
-    "colsample_bytree" : 0.7,         # Lower ratios avoid over-fitting. Values from 0.3 to 0.8 if you have many columns (especially if you did one-hot encoding), or 0.8 to 1 if you only have a few columns.
-    "scale_pos_weight": 1,            # Default is 1. Control balance of positive and negative weights, for unbalanced classes.
-    "reg_lambda": 10,                 # Larger ratios avoid over-fitting. Default is 1.
-    "alpha": 1,                       # Larger ratios avoid over-fitting. Default is 0.
-    'subsample':0.5,                  # Lower ratios avoid over-fitting. Default 1. 0.5 recommended.
-    'num_parallel_tree': 2,           # Parallel trees constructed during each iteration. Default is 1.
-    'objective': 'multi:softprob',    # Default is reg:squarederror. 'multi:softprob' for multiclass.  
-    'num_class': 2,                   # Use if softprob is set.
-    'verbosity':1,
-    'eval_metric': 'auc',
-    'use_rmm':False,                   # Use GPU if available
-    'nthread':-1,                      # Set -1 to use all threads.
-    'tree_method': 'auto',             # 'gpu_hist'. Default is auto: analyze the data and chooses the fastest.
-    'gradient_based': False,           # If True you can set subsample as low as 0.1. Only use with gpu_hist 
-} 
-
-steps = 200  # The number of training iterations
-
-model = xgb.train(param, D_train, steps)
-import numpy as np
-from sklearn.metrics import precision_score, recall_score, accuracy_score
-
-preds = model.predict(D_test)
-best_preds = np.asarray([np.argmax(line) for line in preds])
-
-print("Precision = {}".format(precision_score(Y_test, best_preds)))
-print("Recall = {}".format(recall_score(Y_test, best_preds)))
-print("f1 = {}".format(f1_score(Y_test, best_preds)))
-print("kappa_score = {}".format(cohen_kappa_score(Y_test, best_preds)))
-print("matthews_corrcoef = {}".format(matthews_corrcoef(Y_test, best_preds)))
-# print("mean_squared_error_train = {}".format(mean_squared_error(Y_train, best_preds)))
-print("mean_squared_error_test = {}".format(mean_squared_error(Y_test, best_preds)))
-print("logloss_test = {}".format(log_loss(Y_test, best_preds)))
-# print("logloss_train = {}".format(log_loss(Y_train, best_preds)))
-
-# from xgboost import plot_importance
-# import matplotlib.pyplot as pyplot
-# plot_importance(model)
-```
-
-    [21:00:56] WARNING: ../src/learner.cc:576: 
-    Parameters: { "gradient_based", "scale_pos_weight" } might not be used.
-    
-      This could be a false alarm, with some parameters getting used by language bindings but
-      then being mistakenly passed down to XGBoost core, or some parameter actually being used
-      but getting flagged wrongly here. Please open an issue if you find any such cases.
-    
-    
-    Precision = 0.87559926244622
-    Recall = 0.8473709255293838
-    f1 = 0.8612538540596095
-    kappa_score = 0.7606381582627613
-    matthews_corrcoef = 0.7609421707752342
-    mean_squared_error_test = 0.1166751398068124
-    logloss_test = 4.029857703046233
-    CPU times: user 1h 38s, sys: 3.5 s, total: 1h 42s
-    Wall time: 8min 3s
-
 
 ### <font size="6"> CONCLUSIONS </font></span>
 
