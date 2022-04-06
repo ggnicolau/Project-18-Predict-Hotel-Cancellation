@@ -347,7 +347,7 @@ def flatten(t):
     return [item for sublist in t for item in sublist]
 flat_hotel = flatten(df_hotel_list)
 flat_mode = mode(flat_hotel)
-df_hotel[["agent"]] = df_hotel[["agent"]].fillna(9)
+df_hotel[["agent"]] = df_hotel[["agent"]].fillna(flat_hotel)
 df_hotel[["agent"]] = df_hotel[["agent"]].astype('int64')
 
 # Fill na's from float column with the median
